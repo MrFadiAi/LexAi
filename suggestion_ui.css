@@ -1,0 +1,160 @@
+/* suggestion_ui.css - Modern Styles */
+
+/* Use a cleaner system font stack */
+body { /* Apply base font to the iframe body */
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol";
+  font-size: 14px; /* Slightly larger base font size */
+  line-height: 1.5;
+  margin: 0; /* Remove default body margin */
+  color: #333;
+}
+
+#ai-corrector-suggestion-popup {
+  /* Position is handled by content script iframe style */
+  background-color: #ffffff;
+  border: 1px solid #e0e0e0; /* Lighter border */
+  border-radius: 8px; /* More rounded corners */
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1); /* Softer shadow */
+  padding: 16px; /* More padding */
+  min-width: 280px;
+  max-width: 450px;
+  box-sizing: border-box; /* Ensure padding is included in width */
+}
+
+/* Content Area (Suggestion Text/Edit) */
+#ai-corrector-suggestion-popup .suggestion-content {
+  margin-bottom: 16px; /* Space below content */
+}
+
+#ai-corrector-suggestion-popup .suggestion-content p:first-child { /* Style the "Suggestion:" label */
+  margin: 0 0 8px 0; /* Space below label */
+  font-weight: 600; /* Bolder label */
+  color: #555;
+  font-size: 13px;
+}
+
+#ai-corrector-suggestion-popup #ai-suggestion-text {
+  background-color: #f8f9fa; /* Very light background */
+  padding: 10px;
+  border-radius: 6px;
+  margin: 0; /* Remove default margin */
+  white-space: pre-wrap; 
+  cursor: pointer; /* Indicate it's clickable for editing */
+  border: 1px solid #e9ecef;
+}
+
+#ai-corrector-suggestion-popup #ai-suggestion-edit {
+  /* display: none; /* Controlled by JS */
+  margin: 0; /* Remove default margin */
+  padding: 10px;
+  box-sizing: border-box; 
+  border: 1px solid #ced4da; /* Standard input border */
+  border-radius: 6px;
+  font-family: inherit;
+  font-size: inherit;
+  line-height: inherit;
+  width: 100%; /* Take full width */
+  resize: vertical; /* Allow vertical resize */
+}
+
+/* Options Area (Tone Dropdown) */
+#ai-corrector-suggestion-popup .suggestion-options {
+  margin-bottom: 16px; /* Space below options */
+  display: flex; /* Align label and select */
+  align-items: center;
+  gap: 8px; /* Space between label and select */
+}
+
+#ai-corrector-suggestion-popup .suggestion-options label {
+  font-size: 13px;
+  color: #555;
+  font-weight: 500;
+}
+
+#ai-corrector-suggestion-popup #ai-tone-select {
+  padding: 6px 10px;
+  border: 1px solid #ced4da;
+  border-radius: 6px;
+  font-family: inherit;
+  font-size: 13px;
+  background-color: #fff;
+  flex-grow: 1; /* Allow select to take remaining space */
+}
+
+/* Actions Area (Buttons) */
+#ai-corrector-suggestion-popup .suggestion-actions {
+  display: flex; /* Use flexbox for button layout */
+  justify-content: flex-end; /* Align buttons to the right */
+  gap: 8px; /* Space between buttons */
+}
+
+#ai-corrector-suggestion-popup button {
+  padding: 8px 16px; /* More padding */
+  border: none; /* Remove default border */
+  border-radius: 6px; /* Consistent rounding */
+  background-color: #e9ecef; /* Default light gray */
+  color: #333;
+  cursor: pointer;
+  font-size: 13px;
+  font-weight: 500;
+  transition: background-color 0.2s ease, box-shadow 0.2s ease; /* Smooth transitions */
+}
+
+#ai-corrector-suggestion-popup button:hover {
+  background-color: #dee2e6; /* Slightly darker on hover */
+}
+
+#ai-corrector-suggestion-popup button:active {
+   box-shadow: inset 0 1px 2px rgba(0,0,0,0.1); /* Subtle press effect */
+}
+
+/* Specific Button Styles */
+#ai-corrector-suggestion-popup #ai-accept-button,
+#ai-corrector-suggestion-popup #ai-edit-accept-button {
+  background-color: #28a745; /* Green for accept */
+  color: white;
+}
+#ai-corrector-suggestion-popup #ai-accept-button:hover,
+#ai-corrector-suggestion-popup #ai-edit-accept-button:hover {
+  background-color: #218838; /* Darker green */
+}
+
+#ai-corrector-suggestion-popup #ai-reject-button {
+  background-color: #dc3545; /* Red for reject */
+  color: white;
+}
+#ai-corrector-suggestion-popup #ai-reject-button:hover {
+  background-color: #c82333; /* Darker red */
+}
+
+#ai-corrector-suggestion-popup #ai-rewrite-button {
+  background-color: #007bff; /* Blue for rewrite */
+  color: white;
+}
+#ai-corrector-suggestion-popup #ai-rewrite-button:hover {
+  background-color: #0056b3; /* Darker blue */
+}
+
+/* Hide edit-accept button initially */
+#ai-corrector-suggestion-popup #ai-edit-accept-button {
+  display: none; 
+}
+
+/* Credits Section */
+.suggestion-credits {
+  margin-top: 12px; /* Space above credits */
+  padding-top: 8px; /* Space within credits top */
+  border-top: 1px solid #eee; /* Separator line */
+  text-align: center;
+  font-size: 11px; /* Smaller font */
+  color: #888; /* Lighter color */
+}
+
+.suggestion-credits a {
+  color: #666; /* Slightly darker link */
+  text-decoration: none;
+}
+
+.suggestion-credits a:hover {
+  text-decoration: underline;
+}

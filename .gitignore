@@ -1,0 +1,14 @@
+# Operating System Files
+.DS_Store
+Thumbs.db
+
+# IDE/Editor specific
+.vscode/
+*.swp
+
+# Node dependencies (if added later)
+# node_modules/
+
+# Build output (if added later)
+# build/
+# dist/

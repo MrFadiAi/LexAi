@@ -1,0 +1,145 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>LexAi Settings</title> <!-- Updated Title -->
+  <style>
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+      font-size: 14px;
+      line-height: 1.5;
+      padding: 15px;
+      width: 300px; /* Adjust width as needed */
+      color: #333;
+    }
+    h3 {
+      margin-top: 0;
+      margin-bottom: 10px;
+      color: #111;
+    }
+    label {
+      display: block;
+      margin-bottom: 5px;
+      font-weight: 500;
+    }
+    input[type="text"], input[type="password"] { /* Use password type for key */
+      width: 100%;
+      padding: 8px;
+      margin-bottom: 10px;
+      border: 1px solid #ccc;
+      border-radius: 4px;
+      box-sizing: border-box;
+    }
+    button {
+      padding: 8px 15px;
+      border: none;
+      border-radius: 4px;
+      cursor: pointer;
+      font-size: 13px;
+      font-weight: 500;
+      transition: background-color 0.2s ease;
+      margin-right: 5px;
+    }
+    button#save-button {
+      background-color: #28a745;
+      color: white;
+    }
+    button#save-button:hover {
+      background-color: #218838;
+    }
+    a, button.link-button {
+      color: #007bff;
+      text-decoration: none;
+      cursor: pointer;
+      background: none;
+      border: none;
+      padding: 0;
+      font-size: 13px;
+      display: inline-block; /* Make links behave like buttons */
+      margin-top: 5px;
+    }
+    a:hover, button.link-button:hover {
+      text-decoration: underline;
+    }
+    .link-section {
+        margin-top: 15px;
+        padding-top: 10px;
+        border-top: 1px solid #eee;
+    }
+    .link-section p {
+        margin: 5px 0;
+    }
+    #status {
+      margin-top: 10px;
+      font-size: 12px;
+      color: green;
+    }
+    .credits {
+        margin-top: 15px;
+        padding-top: 10px;
+        border-top: 1px solid #eee;
+        font-size: 12px;
+        color: #666;
+        text-align: center;
+    }
+    /* Style for the model select dropdown */
+    #model-select {
+      width: 100%;
+      padding: 8px;
+      margin-bottom: 10px; /* Add some space below */
+      border: 1px solid #ccc;
+      border-radius: 4px;
+      box-sizing: border-box;
+      background-color: white; /* Ensure background */
+    }
+    /* Style for Donate Button */
+    .donate-button {
+        display: inline-block; /* Make it block-like */
+        padding: 8px 15px;
+        border: none;
+        border-radius: 4px;
+        background-color: #dc3545; /* Red background */
+        color: white !important; /* White text, important to override link color */
+        text-decoration: none !important; /* Remove underline */
+        font-size: 13px;
+        font-weight: 500;
+        transition: background-color 0.2s ease;
+        text-align: center;
+        margin-top: 5px; /* Consistent margin */
+    }
+    .donate-button:hover {
+        background-color: #c82333; /* Darker red on hover */
+        text-decoration: none !important;
+    }
+  </style>
+</head>
+<body>
+  <h3>LexAi Settings</h3> <!-- Updated Heading -->
+
+  <label for="api-key">Google Gemini API Key: <a href="https://aistudio.google.com/apikey" target="_blank" id="get-api-link" style="font-size: 11px; font-weight: normal; margin-left: 5px;">(Get Key)</a></label>
+  <input type="password" id="api-key" placeholder="Enter your API Key">
+  <button id="save-button">Save Key</button>
+  <div id="status"></div>
+
+  <div style="margin-top: 15px;"> <!-- Model Selection -->
+    <label for="model-select">Gemini Model:</label>
+    <select id="model-select">
+      <option value="gemini-2.0-flash">gemini-2.0-flash (Default)</option>
+      <option value="gemini-1.5-flash-latest">gemini-1.5-flash-latest</option>
+      <option value="gemini-2.0-flash-lite">gemini-2.0-flash-lite</option>
+      <option value="gemini-2.5-pro-exp-03-25">gemini-2.5-pro-exp-03-25</option>
+      <!-- Add gemini-pro back if desired -->
+      <!-- <option value="gemini-pro">gemini-pro</option> -->
+    </select>
+  </div>
+
+  <div class="link-section">
+     <p><a href="https://commerce.coinbase.com/checkout/cabb081c-a821-496b-a6ec-ac9a2a5cb0bf" target="_blank" id="donate-link" class="donate-button">Donate via Coinbase</a></p> <!-- Added class -->
+  </div>
+
+  <div class="credits">
+    Created by <a href="https://x.com/Mr_CryptoYT" target="_blank">@Mr_CryptoYT</a>
+  </div>
+
+  <script src="popup.js"></script>
+</body>
+</html>

@@ -1,0 +1,37 @@
+<!-- suggestion_ui.html - Template for the suggestion popup -->
+<link rel="stylesheet" href="suggestion_ui.css">
+<script src="suggestion_ui.js" defer></script> <!-- Add defer to ensure CSS might load first -->
+
+<div id="ai-corrector-suggestion-popup"> <!-- Removed inline style -->
+  <div class="suggestion-content">
+    <p><strong>Suggestion:</strong></p>
+    <p id="ai-suggestion-text"></p>
+    <textarea id="ai-suggestion-edit" rows="3" style="width: 95%; display: none;"></textarea> <!-- Hide edit initially -->
+  </div>
+  <div class="suggestion-options"> <!-- Added options section -->
+    <label for="ai-tone-select">Tone:</label>
+    <select id="ai-tone-select">
+      <option value="neutral">Neutral</option>
+      <option value="formal">Formal</option>
+      <option value="casual">Casual</option>
+      <option value="funny">Funny</option>
+      <option value="serious">Serious</option>
+      <!-- Add more tones as desired -->
+    </select>
+    <label for="ai-language-select" style="margin-left: 10px;">To:</label> <!-- Added Language Select -->
+    <select id="ai-language-select">
+      <option value="English">English</option>
+      <option value="Arabic">Arabic</option>
+      <!-- Add more languages as desired -->
+    </select>
+  </div>
+  <div class="suggestion-actions">
+    <button id="ai-accept-button">Accept</button>
+    <button id="ai-edit-accept-button">Accept Edit</button>
+    <button id="ai-reject-button">Reject</button>
+    <button id="ai-rewrite-button">Rewrite Again</button> <!-- Added Rewrite Button -->
+  </div>
+  <div class="suggestion-credits"> <!-- Added Credits Section -->
+    By <a href="https://x.com/Mr_CryptoYT" target="_blank">@Mr_CryptoYT</a>
+  </div>
+</div>
