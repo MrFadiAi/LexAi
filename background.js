@@ -1,4 +1,4 @@
-// Background service worker (background.js) - v0.4.4 - Refined Funny Tone Prompt
+// Background service worker (background.js) - v0.4.5 - Further Refine Word Suggestion Prompt
 
 console.log("BG Script: Top level execution."); // Keep this
 
@@ -62,6 +62,7 @@ chrome.runtime.onConnect.addListener((port) => {
               }
           })();
       }
+      // Removed spell check handlers
     }); 
     port.onDisconnect.addListener(() => { console.log(`BG Script: Port ${port.name} disconnected.`); });
   } else { console.warn(`BG Script: Connection ignored from port named '${port.name}'`); }
@@ -73,36 +74,8 @@ async function getAISuggestion(text, tone = LAST_TONE, language = 'English') {
   const currentApiKey = GEMINI_API_KEY; const currentModel = AI_MODEL; 
   console.log("BG Script: Using Model:", currentModel, "API Key starting with:", currentApiKey?.substring(0, 7), "Tone:", tone, "Language:", language); 
   if (!currentApiKey) { return `(Error: Gemini API Key not set. Please add your key in the extension popup.)`; } 
-  
-  // --- Refined Prompt Generation ---
-  let toneInstruction = `Apply a '${tone}' tone to the text.`; // Default
-  if (tone.toLowerCase() === 'funny') {
-    // Updated instruction for funny tone
-    toneInstruction = `Rewrite the text with witty, concise, slightly sarcastic internet humor (like a funny Twitter reply). Avoid emojis.`;
-  }
-
-  let prompt;
-  if (language.toLowerCase() === 'english') {
-    // Correction/rewrite in English
-    prompt = `You are an English writing assistant. Review the following text for grammar, style, and natural phrasing. If corrections are needed, provide a revised version in English. If the text is already good, respond with the original text. ${toneInstruction} Keep the response concise and only provide the final revised text.
-
-Original text: "${text}"
-
-Revised text:`; 
-  } else {
-    // Correction/rewrite AND translation
-    prompt = `You are an expert writing assistant and translator. Your goal is to make the text sound natural and fluent in the target language.
-First, review the following text for grammar, style, and natural phrasing, correcting it as needed while preserving the original meaning.
-Second, translate the corrected text into ${language}. Ensure the translation is idiomatic and sounds like it was written by a native speaker of ${language}.
-${toneInstruction} 
-Keep the response concise and provide ONLY the final translated text, without any introductory phrases like "Here is the translation:".
-
-Original text: "${text}"
-
-Final text:`; 
-  }
-  // --- End Refined Prompt Generation ---
-
+  let toneInstruction = `Apply a '${tone}' tone to the text.`; if (tone.toLowerCase() === 'funny') { toneInstruction = `Rewrite the text with witty, concise, slightly sarcastic internet humor (like a funny Twitter reply). Avoid emojis.`; } 
+  let prompt; if (language.toLowerCase() === 'english') { prompt = `You are an English writing assistant. Review the following text for grammar, style, and natural phrasing. If corrections are needed, provide a revised version in English. If the text is already good, respond with the original text. ${toneInstruction} Keep the response concise and only provide the final revised text.\n\nOriginal text: "${text}"\n\nRevised text:`; } else { prompt = `You are an expert writing assistant and translator. Your goal is to make the text sound natural and fluent in the target language.\nFirst, review the following text for grammar, style, and natural phrasing, correcting it as needed while preserving the original meaning.\nSecond, translate the corrected text into ${language}. Ensure the translation is idiomatic and sounds like it was written by a native speaker of ${language}.\n${toneInstruction} \nKeep the response concise and provide ONLY the final translated text, without any introductory phrases like "Here is the translation:".\n\nOriginal text: "${text}"\n\nFinal text:`; } 
   const fullApiUrl = `${GEMINI_API_BASE_URL}${currentModel}:generateContent?key=${currentApiKey}`; 
   try { console.log(`BG Script: Fetching from Gemini API (${currentModel})... Prompt:\n${prompt}`); const response = await fetch(fullApiUrl, { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ contents: [{ parts: [{ text: prompt }] }] }), }); console.log("BG Script: Gemini Fetch response status:", response.status); const data = await response.json(); if (!response.ok) { console.error("BG Script: Gemini API Error Response:", data); const errorMessage = data?.error?.message || JSON.stringify(data) || response.statusText; if (response.status === 400 && errorMessage.toLowerCase().includes('api key not valid')) { throw new Error(`Gemini API Error: API Key not valid. Please check the key in the extension popup.`); } else if (response.status === 403) { throw new Error(`Gemini API Error: Permission denied (Status 403). Check API key permissions or billing.`); } else if (response.status === 404) { throw new Error(`Gemini API Error: Model not found (Status 404). Check the selected model name.`); } throw new Error(`Gemini API request failed: ${response.status} ${errorMessage}`); } console.log("BG Script: Gemini response data:", data); if (data.candidates?.[0]?.content?.parts?.[0]?.text) { const suggestion = data.candidates[0].content.parts[0].text.trim(); console.log("BG Script: AI Suggestion received from Gemini:", suggestion); return suggestion; } else { const blockReason = data.candidates?.[0]?.finishReason; const safetyRatings = data.promptFeedback?.safetyRatings; console.warn("BG Script: No suggestion content found in Gemini API response.", { blockReason, safetyRatings, data }); if (blockReason === 'SAFETY') { throw new Error("Suggestion blocked by Gemini's safety filters."); } return text; } } catch (error) { console.error("BG Script: Error fetching from Gemini API:", error); throw error; } 
 }
@@ -112,71 +85,21 @@ async function getAIReply(originalText, tone = LAST_TONE, language = 'English') 
     const currentApiKey = GEMINI_API_KEY;
     const currentModel = AI_MODEL; 
     console.log(`BG Script: Generating reply for "${originalText.substring(0, 50)}..." using Model: ${currentModel}, Tone: ${tone}, Lang: ${language}`);
-
-    if (!currentApiKey) { 
-        console.warn("BG Script: Generate Reply - API Key not set.");
-        throw new Error("API Key not set."); 
-    }
-
-    // --- Refined Prompt Generation for Reply ---
-    let toneInstruction = `The reply should have a '${tone}' tone.`; 
-    if (tone.toLowerCase() === 'funny') {
-        // Updated instruction for funny tone
-        toneInstruction = `The reply should have a funny, slightly swag, witty, concise internet/twitter humor style. Avoid emojis.`;
-    }
-
-    let languageInstruction = `Generate the reply in English.`;
-    if (language.toLowerCase() !== 'english') {
-        languageInstruction = `Generate the reply directly in ${language}. Ensure the translation is idiomatic and sounds like it was written by a native speaker of ${language}.`;
-    }
-
-    const prompt = `Generate a concise and relevant reply to the following text. ${languageInstruction} ${toneInstruction} Keep the reply relatively short and focused on the original text.
-
-Original Text: "${originalText}"
-
-Reply:`;
-    // --- End Refined Prompt Generation ---
-
-
+    if (!currentApiKey) { console.warn("BG Script: Generate Reply - API Key not set."); throw new Error("API Key not set."); }
+    let toneInstruction = `The reply should have a '${tone}' tone.`; if (tone.toLowerCase() === 'funny') { toneInstruction = `The reply should have a funny, slightly swag, witty, concise internet/twitter humor style. Avoid emojis.`; }
+    let languageInstruction = `Generate the reply in English.`; if (language.toLowerCase() !== 'english') { languageInstruction = `Generate the reply directly in ${language}. Ensure the translation is idiomatic and sounds like it was written by a native speaker of ${language}.`; }
+    const prompt = `Generate a concise and relevant reply to the following text. ${languageInstruction} ${toneInstruction} Keep the reply relatively short and focused on the original text.\n\nOriginal Text: "${originalText}"\n\nReply:`;
     const fullApiUrl = `${GEMINI_API_BASE_URL}${currentModel}:generateContent?key=${currentApiKey}`;
-
     try {
         console.log(`BG Script: Fetching Reply from Gemini API (${currentModel})... Prompt:\n${prompt}`);
-        const response = await fetch(fullApiUrl, {
-            method: "POST",
-            headers: { "Content-Type": "application/json" },
-            body: JSON.stringify({ 
-                contents: [{ parts: [{ text: prompt }] }],
-                // generationConfig: { maxOutputTokens: 100 } 
-            }),
-        });
+        const response = await fetch(fullApiUrl, { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ contents: [{ parts: [{ text: prompt }] }], }), });
         console.log("BG Script: Reply Fetch response status:", response.status);
-
         const data = await response.json();
-
-        if (!response.ok) {
-            console.error("BG Script: Reply API Error Response:", data);
-            const errorMessage = data?.error?.message || JSON.stringify(data) || response.statusText;
-            throw new Error(`Gemini Reply request failed: ${response.status} ${errorMessage}`);
-        }
-
+        if (!response.ok) { console.error("BG Script: Reply API Error Response:", data); const errorMessage = data?.error?.message || JSON.stringify(data) || response.statusText; throw new Error(`Gemini Reply request failed: ${response.status} ${errorMessage}`); }
         console.log("BG Script: Reply response data:", data);
-
-        if (data.candidates?.[0]?.content?.parts?.[0]?.text) {
-            let reply = data.candidates[0].content.parts[0].text.trim();
-            console.log("BG Script: Raw reply result:", reply);
-            reply = reply.replace(/^Reply:\s*/i, ''); 
-            console.log("BG Script: Parsed reply:", reply);
-            return reply;
-        } else {
-            console.warn("BG Script: No reply content found in Gemini API response.", data);
-            throw new Error("Failed to generate reply content."); 
-        }
-
-    } catch (error) {
-        console.error("BG Script: Error fetching reply:", error);
-        throw error; 
-    }
+        if (data.candidates?.[0]?.content?.parts?.[0]?.text) { let reply = data.candidates[0].content.parts[0].text.trim(); console.log("BG Script: Raw reply result:", reply); reply = reply.replace(/^Reply:\s*/i, ''); console.log("BG Script: Parsed reply:", reply); return reply; } 
+        else { console.warn("BG Script: No reply content found in Gemini API response.", data); throw new Error("Failed to generate reply content."); }
+    } catch (error) { console.error("BG Script: Error fetching reply:", error); throw error; }
 }
 
 // --- Initialization ---
