@@ -1,4 +1,4 @@
-// Background service worker (background.js) - v0.4.5 - Further Refine Word Suggestion Prompt
+// Background service worker (background.js) - v0.4.6 - Explicit Contraction Correction Prompt
 
 console.log("BG Script: Top level execution."); // Keep this
 
